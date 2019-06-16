@@ -1,0 +1,16 @@
+$time = Get-Date -Format "y.M.d HH.mm" 
+Expand-Archive 'M:\PS\PSh.zip' -DestinationPath 'M:\PS\temp\' -Force #распаковка во временную папку
+#cd 'M:\PS\temp\PSh\'
+$list = Get-ChildItem -Recurse -File
+#Ниже формирование имени и перемещение файлов
+$list | foreach {
+    [string]$pathful = $_.Directory
+    $pathful = $pathful.Replace('M:\PS\temp\PSh', '')
+    $pathful = $pathful.Replace('\', '_') #Если в подпапках будут ещё элементы, они так же будут вынуты, что б избежать путаницы в конечном имени
+    [string]$path1 = $pathful + '_' + $time + '_' + $_.Name
+    #$path1 = $path1.Replace(':', '.')
+    Move-Item -path $_.FullName -Destination "M:\PS\PSh\$path1" -Force
+}
+#Удаление временной директории
+#cd 'M:\PS\'
+Remove-Item M:\PS\temp -Recurse -Force
